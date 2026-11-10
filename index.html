@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Journal — To-do & scrapbook</title>
+<meta name="little-journal-version" content="2026-11-09-little-journal-solid-shades-page-gate-v6">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Caveat:wght@400;600&family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Parisienne&family=Satisfy&display=swap');
+:root{--ink:#51464a;--muted:#887b7d;--paper:#fffaf5;--accent:#d97979;--accent2:#f2b6a8;--line:#eadbd2;--shadow:0 12px 35px #6b4c3a12}
+*{box-sizing:border-box}body{margin:0;background:#f8f2ed;color:var(--ink);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif}
+button,input,textarea{font:inherit}button{cursor:pointer;border:0}
+header{padding:24px clamp(18px,5vw,60px);display:flex;align-items:center;justify-content:space-between;gap:15px;background:#fffaf7;border-bottom:1px solid #efe4dc;position:sticky;top:0;z-index:5}
+.brand{font-family:Georgia,serif;font-size:26px;letter-spacing:.3px}.brand span{color:#c77d82}.tagline{font-size:12px;color:var(--muted);margin-top:3px}
+nav{display:flex;gap:8px;flex-wrap:wrap}nav button,.soft-btn{background:#f5ebe7;color:#6c5555;padding:10px 15px;border-radius:999px;font-size:13px}nav button.active,.primary{background:var(--accent);color:white}
+main{max-width:1200px;margin:28px auto;padding:0 20px 60px}.view{display:none}.view.active{display:block}
+h1,h2,h3{font-family:Georgia,serif;font-weight:500}h1{font-size:34px;margin:0 0 8px}h2{font-size:25px;margin:0 0 14px}h3{font-size:19px;margin:0 0 10px}
+.intro{color:var(--muted);margin:0 0 24px}.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:20px}
+.panel{background:#fffdfb;border:1px solid #efe5de;border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+.task-form{display:flex;gap:8px;margin-bottom:16px}.task-form input,.sub-form input{min-width:0;flex:1;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.primary{padding:12px 17px;border-radius:12px;font-weight:600}.task{border:1px solid #f0e5df;border-radius:15px;padding:14px;margin:10px 0;background:#fff}.task-top{display:flex;align-items:center;gap:10px}.task-top strong{flex:1}.task.done{background:#faf7f3;opacity:.75}.task.done .task-name{text-decoration:line-through}
+.check{accent-color:var(--accent);width:17px;height:17px}.subtasks{padding:10px 0 0 28px}.sub{display:flex;gap:8px;align-items:center;margin:8px 0;color:#75696a;font-size:14px}.sub-form{display:flex;gap:7px;margin-top:10px}.sub-form input{padding:9px}.tiny{font-size:12px;color:var(--muted)}.progress{height:8px;background:#f1e8e3;border-radius:99px;overflow:hidden;margin:12px 0}.progress>div{height:100%;background:var(--accent);width:0;transition:.2s}
+.stat{font-family:Georgia,serif;font-size:30px}.reward-list{display:flex;flex-wrap:wrap;gap:9px}.reward{background:#fff7f2;border:1px solid #f1e1d9;border-radius:14px;padding:10px;text-align:center;min-width:75px}.reward .emoji{font-size:29px;display:block}.empty{color:#a09290;font-size:14px;padding:12px 0}
+.journal-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:20px;align-items:start}.journal-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.page{--page:#e9a0a0;--deep:#b85d62;--pale:#f9e4dc;position:relative;min-height:590px;padding:52px clamp(38px,6vw,70px);border-radius:7px 18px 18px 7px;background:var(--page);box-shadow:0 18px 45px #6c4b3b20;overflow:hidden;border:1px solid #ffffffa8;transition:background .25s ease}
+.page:before{content:none}
+.page:after{content:none}
+.page-head{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;color:var(--deep);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.page h2{position:relative;z-index:1;color:var(--deep);font-size:30px;margin:24px 0 8px}
+.page-hint{position:relative;z-index:1;color:var(--deep);opacity:.7;font-size:13px;margin-bottom:25px}
+.journal-note{position:relative;z-index:1;width:100%;min-height:100px;resize:vertical;border:0;border-bottom:1px dashed #ffffffa8;background:transparent;color:var(--deep);outline:none;padding:10px 3px;font-family:Georgia,serif;font-size:16px}
+.sticker-canvas{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:12px;margin-top:18px;min-height:190px;align-content:flex-start}
+.placed{font-size:38px;background:#fff9;border-radius:12px;padding:8px;box-shadow:0 3px 10px #684c3b18;cursor:pointer;position:relative}.placed small{display:block;font-size:9px;text-align:center;color:var(--deep)}
+.tape{position:relative;z-index:1;margin:18px -10px 8px;height:25px;opacity:.9;border-top:2px dashed #ffffffa8;border-bottom:2px dashed #ffffffa8;background:repeating-linear-gradient(135deg,var(--deep) 0 5px,var(--pale) 5px 10px)}
+.tape.lace{height:34px;background:radial-gradient(circle at 10px 0,transparent 8px,var(--deep) 8.5px 10px,transparent 10.5px) 0 0/20px 20px repeat-x,linear-gradient(var(--pale),var(--pale));border:0;mask-image:linear-gradient(#000,#000)}
+.tape-caption{font-size:10px;color:var(--deep);text-align:center;position:relative;z-index:1}
+.journal-side .panel{margin-bottom:14px}.palette{display:flex;gap:5px;margin:10px 0}.swatch{height:24px;flex:1;border-radius:6px}.sticker-pick{display:inline-flex;align-items:center;justify-content:center;font-size:25px;background:#fff8;border:1px solid #eee0d7;border-radius:10px;width:48px;height:48px;margin:4px;cursor:pointer}.sticker-pick:hover{transform:translateY(-2px)}
+.sticker-pick,.placed{background:linear-gradient(145deg,#fff9ff,#fce4f5 48%,#fff);border:1px solid #f1c7e7;box-shadow:0 3px 12px #d98bc533,inset 0 0 0 1px #fff}
+.placed{filter:drop-shadow(0 2px 3px #b77aa455)}
+.reward{background:linear-gradient(145deg,#fffafd,#fbe5f4);border-color:#efc7e4}
+.page{background:var(--page)}
+.lock{opacity:.45;filter:grayscale(1)}.page-controls{display:flex;gap:8px;align-items:center}.page-controls button{background:#fff8f3;border:1px solid #eadbd2;border-radius:10px;padding:9px 12px;color:#6c5555}
+.page-count{font-size:13px;color:var(--muted)}.tape-option{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px}.tape-option button{flex:1;text-align:left;padding:9px;border-radius:10px;background:#faf3ef;color:#68575a}.tape-option button:disabled{opacity:.4;cursor:not-allowed}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#51464a;color:white;padding:12px 18px;border-radius:99px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:10}.toast.show{opacity:1}
+.task{transition:background .2s}.task.cat-selfcare{background:#ffe8f0}.task.cat-work{background:#ffeedc}.task.cat-home{background:#e5f4e9}.task.cat-social{background:#eee7fa}.task.cat-hobby{background:#fff5cf}.task.cat-errands{background:#e4f1fb}.task.done{opacity:.78}
+.task-category{font-size:11px;border:1px solid #ffffffb8;border-radius:999px;padding:5px 8px;background:#ffffffa8;color:#66565a;max-width:125px}
+.extra-tools{display:grid;grid-template-columns:1fr 1fr;gap:14px}.tool-input{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;margin:6px 0}.hand-preview{min-height:76px;padding:14px;border-radius:14px;background:#fff8f5;border:1px dashed #e8c9d5;font-size:27px;overflow-wrap:anywhere;color:#77566a}.font-connected{font-family:'Dancing Script','Segoe Script','Bradley Hand','Apple Chancery',cursive;font-style:normal;letter-spacing:-.8px}.font-elegant{font-family:'Great Vibes','URW Chancery L','Apple Chancery','Segoe Script',cursive;font-style:normal}.font-playful{font-family:'Caveat','Comic Sans MS','Chalkboard',cursive}.font-thin{font-family:'Satisfy','Segoe Print','Bradley Hand',cursive;font-weight:300}.ransom-preview{display:flex;flex-wrap:wrap;gap:5px;min-height:60px;padding:12px;background:#fff8f3;border-radius:14px;border:1px dashed #e8c9d5}.ransom-letter{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:38px;padding:3px 7px;background:#f4e6ce;color:#554a42;font-family:Georgia,serif;font-weight:800;box-shadow:1px 2px 3px #0002;transform:rotate(var(--tilt));border:1px dashed #c9b89e}.sticker-bank{display:flex;flex-wrap:wrap;gap:5px}.sticker-bank button{font-size:25px;border:1px solid #ead8df;border-radius:10px;padding:7px;background:#fff9f8}.sticker-bank button.universal{filter:hue-rotate(var(--hue,0deg))}.mini-label{font-size:12px;color:var(--muted)}
+
+/* Vintage fruit-label and postage-stamp sticker sheet */
+.sticker-bank{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:12px}
+.sticker-bank button{position:relative;min-width:0;min-height:84px;padding:7px 4px 6px;border:0;border-radius:3px;background:#f4e7cf;color:#344b3b;box-shadow:0 2px 5px #4935222c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;overflow:hidden;font-family:Georgia,serif}
+.sticker-bank button:before{content:"";position:absolute;inset:4px;border:1px dashed currentColor;opacity:.55;pointer-events:none}
+.sticker-bank button .stamp-art{font-size:19px;line-height:1.05;font-weight:bold;letter-spacing:1px}
+.sticker-bank button .stamp-name{font-size:9px;line-height:1.1;text-transform:uppercase;letter-spacing:.8px;font-weight:bold}
+.sticker-bank button .stamp-sub{font-size:7px;letter-spacing:.4px}.sticker-bank button.round{border-radius:50%;min-height:84px;aspect-ratio:1}
+.sticker-bank button.flower{background:#e6d9d0;color:#744c62}.sticker-bank button.fruit{background:#e7dfb8;color:#315a43}.sticker-bank button.blue{background:#c8d8d5;color:#34545a}.sticker-bank button.rose{background:#e8c6c4;color:#7b4550}.sticker-bank button.cream{background:#efe5d2;color:#6a5b43}
+.sticker-bank button .barcode{font-family:monospace;font-size:8px;letter-spacing:-1px;line-height:1}.sticker-bank button:hover{transform:translateY(-2px) rotate(-1deg)}
+.placed.stamp-placed{font-size:initial;width:88px;min-height:92px;padding:8px 5px;background:#f4e7cf;color:#344b3b;border-radius:3px;border:1px solid #fff9;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;font-family:Georgia,serif;box-shadow:0 3px 8px #49352235}
+.placed.stamp-placed .stamp-art{font-size:22px;font-weight:bold;line-height:1.1}.placed.stamp-placed .stamp-name{font-size:9px;letter-spacing:.7px;text-transform:uppercase;font-weight:bold}.placed.stamp-placed .stamp-sub{font-size:7px}.placed.stamp-placed .barcode{font-family:monospace;font-size:8px}
+.kraft-hint{background:#b69a70;color:#4e3c2c;padding:5px 8px;display:inline-block;font-family:Georgia,serif;font-size:11px;letter-spacing:1px}
+
+.page-gate{margin:0 0 13px;padding:12px 15px;border:1px solid #e9d8d2;border-radius:15px;background:#fffaf7;color:#6f555b;font-size:13px;line-height:1.5;box-shadow:0 5px 16px #6c4b3b0d}
+.page-gate strong{display:block;font-family:Georgia,serif;font-size:15px;font-weight:600;margin-bottom:3px}
+.page-gate .gate-progress{height:7px;border-radius:99px;background:#efe5df;overflow:hidden;margin-top:8px}
+.page-gate .gate-progress span{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .2s}
+.page-controls button.is-locked{opacity:.72;border-style:dashed}
+.page-controls button.is-ready{background:#f7e2ed;border-color:#e6b7ce;color:#77465f}
+.placed.cd-placed{width:104px;height:104px;padding:0;border:0;background:transparent;box-shadow:none;filter:drop-shadow(0 3px 4px #43364a55)}
+.placed.mcbling-placed{padding:0;border:0;background:transparent;box-shadow:none;filter:drop-shadow(0 3px 3px #57435a44)}
+.placed.mcbling-placed img{width:96px;height:96px;object-fit:contain;display:block}
+.placed.cd-placed img{width:100%;height:100%;display:block;object-fit:contain}
+.sticker-pick.cd-pick{width:86px;height:86px;padding:2px;background:transparent;border:0;box-shadow:none}
+.sticker-pick.cd-pick img{width:100%;height:100%;object-fit:contain}
+.reward.cd-reward img{width:82px;height:82px;object-fit:contain;display:block;margin:auto}
+
+@media(max-width:520px){.page{padding:48px 38px}}
+
+@media(max-width:800px){header{align-items:flex-start;flex-direction:column}.layout,.journal-layout{grid-template-columns:1fr}.page{min-height:520px}.journal-side{display:grid;grid-template-columns:1fr 1fr;gap:12px}.journal-side .panel{margin:0}}
+@media(max-width:520px){main{padding:0 12px 40px}.panel{padding:16px}.task-form{flex-direction:column}.journal-side{grid-template-columns:1fr}.page{padding:28px 25px}.brand{font-size:23px}}
+
+/* Photographic fruit cut-outs: original colors stay intact; placement follows compatible rainbow hues. */
+.fruit-sticker{width:76px;height:76px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px #70513b35)}
+.sticker-pick.fruit-pick{width:82px;height:82px;padding:2px;background:transparent;border:0;box-shadow:none;position:relative}
+.sticker-pick.fruit-pick img{width:100%;height:100%;object-fit:contain}
+.sticker-pick.fruit-pick:disabled{opacity:.3;filter:grayscale(.85);cursor:not-allowed}
+.sticker-pick.fruit-pick .tiny-lock{position:absolute;right:0;bottom:0;font-size:11px;background:#fff9;border-radius:99px;padding:2px}
+.placed.fruit-placed{padding:0;background:transparent;border:0;box-shadow:none;filter:drop-shadow(0 3px 3px #60452e38)}
+.placed.fruit-placed img{width:108px;height:108px;object-fit:contain;display:block}
+.reward.fruit-reward{min-width:94px;background:#fffaf2;border-color:#e7d8bf}
+.reward.fruit-reward img{width:80px;height:80px;object-fit:contain;display:block;margin:auto}
+.sticker-bank .fruit-bank{background:#fffaf2;border:1px solid #e7d8bf}
+.unlock-status{min-height:54px;display:flex;align-items:center;padding:12px 14px;border:1px dashed #d9c4aa;border-radius:13px;background:#f8f0e5;color:#705d4a;font-family:Georgia,serif;font-size:13px;line-height:1.5}.unlock-status-text{max-width:440px}
+
+
+.hand-preview{display:block;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.35;text-align:left;min-height:76px}
+.handwriting-placed{display:inline-block;white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%;min-width:2ch;min-height:1.35em;padding:4px 8px;background:#fffaf0b8;border:1px dashed #d8c5ad;border-radius:5px;line-height:1.35;font-size:25px;box-shadow:0 2px 5px #6b4c3a18;}
+.ransom-preview{align-items:center;gap:5px;}
+.ransom-letter{display:inline-flex;align-items:center;justify-content:center;min-width:27px;min-height:36px;padding:3px 7px;color:#443b38;font-weight:700;box-shadow:1px 3px 5px #49352235;border:1px solid #d0c0a8;clip-path:polygon(2% 0,98% 2%,100% 94%,92% 100%,6% 98%,0 8%);font-size:23px;line-height:1;user-select:none;}
+.ransom-space{display:inline-block;width:12px;height:30px;}
+.placed.ransom-letter{margin:4px 2px;border-radius:0;padding:4px 8px;min-width:29px;min-height:40px;}
+.placed.ransom-space{background:transparent;border:0;box-shadow:none;filter:none;padding:0;margin:0;width:10px;}
+.sticker-pick.fruit-pick,.sticker-pick.flower-pick{width:82px;height:82px;padding:2px;background:transparent;border:0;box-shadow:none;position:relative;}
+.sticker-pick.fruit-pick img,.sticker-pick.flower-pick img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 3px #70513b35)}
+.sticker-pick.fruit-pick:disabled,.sticker-pick.flower-pick:disabled{opacity:.3;filter:grayscale(.85);cursor:not-allowed}
+.placed.fruit-placed,.placed.flower-placed{padding:0;background:transparent;border:0;box-shadow:none;filter:drop-shadow(0 3px 3px #60452e38)}
+.placed.fruit-placed img,.placed.flower-placed img{width:108px;height:108px;object-fit:contain;display:block;}
+.reward.fruit-reward,.reward.flower-reward{min-width:94px;background:#fffaf2;border-color:#e7d8bf;}
+.reward.fruit-reward img,.reward.flower-reward img{width:80px;height:80px;object-fit:contain;display:block;margin:auto;}
+
+
+/* v3: reliable visible handwriting and convincing individual cut-out letters */
+.hand-preview{display:block!important;min-height:96px!important;width:100%;white-space:pre-wrap!important;overflow-wrap:anywhere!important;word-break:normal!important;line-height:1.5!important;font-size:30px!important;color:#705267!important;text-indent:0!important;visibility:visible!important;opacity:1}
+.handwriting-placed{display:inline-block!important;position:relative;z-index:3;max-width:100%;min-width:2ch;min-height:1.5em;padding:5px 10px;margin:5px 3px;background:#fffaf0d9;border:1px dashed #cfbba5;border-radius:6px;color:#62465a!important;font-size:27px!important;line-height:1.45!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;word-break:normal!important;vertical-align:middle;visibility:visible!important;opacity:1!important;text-indent:0!important}
+.font-connected{font-family:'Dancing Script','Segoe Print','Bradley Hand','Apple Chancery',cursive!important;font-weight:600;letter-spacing:-.6px}
+.font-elegant{font-family:'Great Vibes','URW Chancery L','Apple Chancery','Segoe Print',cursive!important;font-weight:500}
+.font-playful{font-family:'Caveat','Segoe Print','Comic Sans MS',cursive!important;font-weight:600}
+.font-thin{font-family:'Satisfy','Segoe Print','Bradley Hand',cursive!important;font-weight:400}
+.ransom-letter{position:relative;display:inline-flex!important;align-items:center;justify-content:center;min-width:29px;min-height:39px;padding:4px 8px;margin:3px 2px;color:#443b38;font-weight:700;line-height:1;box-shadow:1px 3px 5px #49352235;border:1px solid #d0c0a8;user-select:none;vertical-align:middle;}
+.ransom-preview .ransom-letter{min-width:31px;min-height:43px;padding:5px 8px}
+.placed.ransom-letter{min-width:31px;min-height:43px;padding:5px 8px;cursor:pointer}
+.ransom-space,.placed.ransom-space{display:inline-block;width:13px;min-width:13px;height:34px;padding:0;margin:0;background:transparent!important;border:0!important;box-shadow:none!important;filter:none!important}
+
+
+.font-parisienne{font-family:'Parisienne','Segoe Script',cursive!important;font-weight:500;letter-spacing:.1px}
+.font-sweet{font-family:'Allura','Dancing Script','Segoe Script',cursive!important;font-weight:500;letter-spacing:.1px}
+.hand-preview,.handwriting-placed{font-feature-settings:'kern' 1,'liga' 1;font-kerning:normal;font-variant-ligatures:common-ligatures}
+.ransom-letter{padding:4px 9px 5px!important;border:1px solid #d2c1a6!important;box-shadow:1px 3px 6px #5b42332e!important;line-height:1!important;letter-spacing:.2px;transform-origin:center center}
+.ransom-preview{gap:7px!important;padding:14px!important}
+.placed.ransom-letter{margin:4px 3px!important}
+.sticker-pick img{pointer-events:none}
+
+
+/* Task reward chooser: choose one of three collectible stickers */
+.reward-choice-backdrop{position:fixed;inset:0;z-index:9999;background:rgba(55,35,48,.48);display:flex;align-items:center;justify-content:center;padding:18px}
+.reward-choice{width:min(560px,100%);background:#fff9f7;border:2px solid #efcbd9;border-radius:24px;padding:22px;box-shadow:0 18px 60px #35203355;text-align:center;color:#765467}
+.reward-choice h2{font-family:Georgia,serif;margin:0 0 7px;font-size:25px}.reward-choice p{margin:0 0 17px;font-size:14px}
+.reward-choice-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.reward-choice-option{border:1px solid #efd5df;background:white;border-radius:16px;padding:10px 6px;cursor:pointer;min-height:130px;color:#765467;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:.15s}
+.reward-choice-option:hover{transform:translateY(-3px);box-shadow:0 7px 18px #a66a8830;border-color:#d99ab8}
+.reward-choice-option img{width:88px;height:88px;object-fit:contain;max-width:100%}.reward-choice-option span{font-size:11px;font-weight:700}
+.reward-choice-close{margin-top:15px;border:0;background:#f2e2e9;color:#765467;border-radius:999px;padding:9px 17px;cursor:pointer}
+@media(max-width:430px){.reward-choice{padding:16px}.reward-choice-option{min-height:105px}.reward-choice-option img{width:66px;height:66px}}
+</style>
+</head>
+<body>
+<header>
+ <div><div class="brand">little <span>journal</span> ✿</div><div class="tagline">little tasks, lovely rewards</div></div>
+ <nav><button class="active" data-view="tasks">♡ To-do list</button><button data-view="journal">✿ My journal</button><button data-view="tools">✎ Letter studio</button><button data-view="collection">☆ Collection</button><button data-view="settings">⚙ Settings</button></nav>
+</header>
+<main>
+<section class="view active" id="tasks">
+ <h1>Make today lovely 🌷</h1><p class="intro">Elke kleine stap verdient een beetje magie.</p>
+ <div class="layout">
+  <div class="panel">
+   <h2>My tasks</h2>
+   <form class="task-form" id="taskForm"><input id="taskInput" placeholder="Voeg een nieuwe taak toe..." required maxlength="90"><button class="primary">+ Add task</button></form>
+   <div id="tasksList"></div>
+  </div>
+  <div>
+   <div class="panel">
+    <h3>Your little progress</h3><div class="stat" id="progressText">0 / 0</div><div class="progress"><div id="progressBar"></div></div><p class="tiny">Afgeronde subtaken</p>
+    <div class="stat" id="stickerCount">0</div><p class="tiny">Verdiende stickers</p>
+    <div class="stat" id="tapeCount">0</div><p class="tiny">Unlocked washi tapes</p>
+   </div>
+   <div class="panel" style="margin-top:16px"><h3>How rewards work</h3><p class="tiny">✿ Rond alle subtaken van een taak af en kies één van drie stickers die bij de kleur van je huidige journalpagina passen.</p><p class="tiny">♡ Rond meer dan 5 subtaken af om je eerste washi tape te unlocken. Daarna unlock je bij iedere 5 extra subtaken een nieuwe tape.</p><button class="soft-btn" onclick="showView('journal')">Visit my journal →</button></div>
+  </div>
+ </div>
+</section>
+<section class="view" id="journal">
+ <div class="journal-toolbar"><div><h1>My little journal 📔</h1><p class="intro" style="margin:4px 0 0">Elke tint is een eigen pagina. Vul hem met 12 stickers en verdien alle stickers die bij die kleur horen.</p></div><div class="page-controls"><button id="prevPage">←</button><span class="page-count" id="pageCount">Page 1</span><button id="nextPage">→ New page</button></div></div>
+ <div class="page-gate" id="pageUnlockStatus" aria-live="polite"></div>
+ <div class="journal-layout">
+  <div class="page" id="journalPage">
+   <div class="page-head"><span>little memories</span><span id="pageColorName">soft red</span></div>
+   <h2 id="pageTitle">A page of my own</h2><div class="page-hint"><span class="kraft-hint">A LITTLE COLLECTION OF LOVELY THINGS</span></div>
+   <div class="tape" id="topTape"></div><div class="tape-caption">✿ a little piece of happiness ✿</div>
+   <textarea class="journal-note" id="journalNote" placeholder="Schrijf hier iets liefs, een herinnering of je plannen..."></textarea>
+   <div class="sticker-canvas" id="stickerCanvas"></div>
+   <div class="tape lace" id="bottomTape"></div>
+  </div>
+  <aside class="journal-side">
+   <div class="panel"><h3>Page palette</h3><div class="tiny">De decoraties passen zich vanzelf aan jouw pagina aan.</div><div class="palette" id="palette"></div><div class="tiny" id="paletteLabel"></div></div>
+   <div class="panel"><h3>My stickers</h3><div class="tiny">Klik op een sticker om hem op je pagina te plakken.</div><div id="journalStickers" class="reward-list"></div></div>
+   <div class="panel"><h3>Nog te verdienen stickers 🔒</h3><p class="tiny">De afbeeldingen blijven verborgen totdat je ze verdient. Rond alle subtaken van een taak af en kies één van drie stickers. Je kunt alleen stickers gebruiken die je hebt vrijgespeeld en die bij de paginakleur passen!</p><div id="stickerBank" class="unlock-status" aria-live="polite"></div></div>
+   <div class="panel"><h3>Washi tape</h3><div class="tiny">Je tapes krijgen automatisch de kleuren van deze pagina.</div><div id="journalTapes"></div></div>
+  </aside>
+ </div>
+</section>
+<section class="view" id="tools">
+ <h1>Make it pretty ✍️</h1><p class="intro">Maak je eigen handschrift en knipletter-stickers.</p>
+ <div class="layout">
+  <div class="panel"><h2>Handwriting beautifier</h2><p class="tiny">Typ één keer en probeer verschillende sierlijke schrijfletters.</p>
+   <textarea id="handText" class="tool-input" rows="3" placeholder="little moments are everything ♡"></textarea>
+   <select id="handFont" class="tool-input"><option value="font-connected">Verbonden handschrift</option><option value="font-elegant">Elegant sierlijk</option><option value="font-playful">Speels handschrift</option><option value="font-thin">Dun & minimal</option><option value="font-parisienne">Parisienne — romantisch</option><option value="font-sweet">Sweet cursive</option></select>
+   <div id="handPreview" class="hand-preview font-connected">little moments are everything ♡</div>
+   <button class="soft-btn" id="addHandwriting">♡ Voeg tekst toe aan mijn pagina</button>
+  </div>
+  <div class="panel"><h2>Newspaper letter maker</h2><p class="tiny">Maak een woord met losse, verschillend geknipte tijdschriftletters. Je kunt zelf de tekst invoeren en de letters worden losse papiertjes.</p>
+   <input id="ransomText" class="tool-input" maxlength="45" placeholder="bijv. DREAM BIG">
+   <div id="ransomPreview" class="ransom-preview"></div>
+   <button class="soft-btn" id="addRansom">✂ Voeg knipletters toe aan mijn pagina</button>
+  </div>
+ </div>
+</section>
+<section class="view" id="collection">
+ <h1>My collection ✨</h1><p class="intro">Alle stickers en versieringen die je tot nu toe hebt verdiend.</p>
+ <div class="layout"><div class="panel"><h2>Stickers</h2><div id="allStickers" class="reward-list"></div></div><div class="panel"><h2>Washi tapes</h2><p class="tiny">Je verdient een nieuwe tape bij 6, 11, 16, 21... afgeronde subtaken.</p><div id="allTapes"></div></div></div>
+</section>
+<section class="view" id="settings">
+ <h1>Little settings ⚙️</h1><p class="intro">Maak je journal helemaal eigen.</p>
+ <div class="panel" style="max-width:650px">
+  <h2>Journal display</h2>
+  <label class="sub" style="font-size:15px"><input class="check" type="checkbox" id="hidePageNumbers"> Verberg paginanummers in mijn journal</label>
+  <p class="tiny">Je kunt nog steeds met de pijltjes door je pagina's bladeren. Alleen het paginanummer wordt verborgen.</p>
+  <hr style="border:0;border-top:1px solid #eee3dc;margin:18px 0">
+  <h2>Sticker aesthetic</h2>
+  <p class="tiny">Een beetje Y2K, McBling, glitter, chrome, fruit, bloemen en cute nostalgia ✧</p>
+  <div class="reward-list"><span class="reward">💿<br><small>CDs</small></span><span class="reward">💎<br><small>Diamonds</small></span><span class="reward">💖<br><small>Hearts</small></span><span class="reward">🪩<br><small>Disco</small></span><span class="reward">👛<br><small>Fashion</small></span><span class="reward">🦋<br><small>Butterflies</small></span></div>
+ </div>
+</section>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='littleJournal_v1';
+const fruitStickers=[{"id":"fruit_whole_1","name":"Pear","src":"little-journal-assets/whole_01.png","allowed":["green","mint","lime","yellow"],"universal":false,"variant":"whole"},{"id":"fruit_whole_2","name":"Apple","src":"little-journal-assets/whole_02.png","allowed":["red","coral","pink","green"],"universal":false,"variant":"whole"},{"id":"fruit_whole_3","name":"Blueberry","src":"little-journal-assets/whole_03.png","allowed":["blue","periwinkle","purple"],"universal":false,"variant":"whole"},{"id":"fruit_whole_4","name":"Banana","src":"little-journal-assets/whole_04.png","allowed":["yellow","apricot"],"universal":false,"variant":"whole"},{"id":"fruit_whole_5","name":"Strawberry","src":"little-journal-assets/whole_05.png","allowed":["red","coral","pink","green","mint","lime"],"universal":true,"variant":"whole"},{"id":"fruit_whole_6","name":"Mango","src":"little-journal-assets/whole_06.png","allowed":["orange","apricot","yellow"],"universal":false,"variant":"whole"},{"id":"fruit_whole_7","name":"Peach","src":"little-journal-assets/whole_07.png","allowed":["coral","orange","apricot","pink"],"universal":false,"variant":"whole"},{"id":"fruit_whole_8","name":"Pineapple","src":"little-journal-assets/whole_08.png","allowed":["yellow","apricot","orange"],"universal":false,"variant":"whole"},{"id":"fruit_whole_9","name":"Apricot half","src":"little-journal-assets/whole_09.png","allowed":["orange","apricot","yellow"],"universal":false,"variant":"whole"},{"id":"fruit_whole_10","name":"Raspberry","src":"little-journal-assets/whole_10.png","allowed":["red","coral","pink","purple"],"universal":false,"variant":"whole"},{"id":"fruit_whole_11","name":"Lemon","src":"little-journal-assets/whole_11.png","allowed":["yellow","lime"],"universal":false,"variant":"whole"},{"id":"fruit_whole_12","name":"Watermelon slice","src":"little-journal-assets/whole_12.png","allowed":["red","coral","pink","green","mint"],"universal":false,"variant":"whole"},{"id":"fruit_whole_13","name":"Kiwi slice","src":"little-journal-assets/whole_13.png","allowed":["green","mint","lime"],"universal":false,"variant":"whole"},{"id":"fruit_whole_14","name":"Pomegranate","src":"little-journal-assets/whole_14.png","allowed":["red","coral","pink"],"universal":false,"variant":"whole"},{"id":"fruit_slice_1","name":"Strawberry slice (cut)","src":"little-journal-assets/slice_01.png","allowed":["red","coral","pink","green","mint","lime"],"universal":true,"variant":"slice"},{"id":"fruit_slice_2","name":"Kiwi slice (cut)","src":"little-journal-assets/slice_02.png","allowed":["green","mint","lime"],"universal":false,"variant":"slice"},{"id":"fruit_slice_3","name":"Orange slice (cut)","src":"little-journal-assets/slice_03.png","allowed":["orange","apricot","yellow"],"universal":false,"variant":"slice"},{"id":"fruit_slice_4","name":"Pomegranate slice (cut)","src":"little-journal-assets/slice_04.png","allowed":["red","coral","pink"],"universal":false,"variant":"slice"},{"id":"fruit_slice_5","name":"Dragon fruit slice (cut)","src":"little-journal-assets/slice_05.png","allowed":["pink","coral"],"universal":false,"variant":"slice"},{"id":"fruit_slice_6","name":"Lime slice (cut)","src":"little-journal-assets/slice_06.png","allowed":["green","mint","lime"],"universal":false,"variant":"slice"},{"id":"fruit_slice_7","name":"Papaya half (cut)","src":"little-journal-assets/slice_07.png","allowed":["orange","apricot","yellow"],"universal":false,"variant":"slice"},{"id":"fruit_slice_8","name":"Watermelon slice (cut)","src":"little-journal-assets/slice_08.png","allowed":["red","coral","pink","green","mint"],"universal":false,"variant":"slice"},{"id":"fruit_slice_9","name":"Lemon half (cut)","src":"little-journal-assets/slice_09.png","allowed":["yellow","lime"],"universal":false,"variant":"slice"},{"id":"fruit_slice_10","name":"Blood orange slice (cut)","src":"little-journal-assets/slice_10.png","allowed":["orange","coral","red"],"universal":false,"variant":"slice"},{"id":"fruit_slice_11","name":"Blueberry (cut)","src":"little-journal-assets/slice_11.png","allowed":["blue","periwinkle","purple"],"universal":false,"variant":"slice"},{"id":"fruit_slice_12","name":"Plum (cut)","src":"little-journal-assets/slice_12.png","allowed":["purple","periwinkle","pink"],"universal":false,"variant":"slice"},{"id":"fruit_slice_13","name":"Coconut half (cut)","src":"little-journal-assets/slice_13.png","allowed":["beige","apricot","yellow"],"universal":false,"variant":"slice"},{"id":"fruit_slice_14","name":"Pineapple slice (cut)","src":"little-journal-assets/slice_14.png","allowed":["yellow","apricot","orange"],"universal":false,"variant":"slice"},{"id":"fruit_slice_15","name":"Peach half (cut)","src":"little-journal-assets/slice_15.png","allowed":["coral","orange","apricot","pink"],"universal":false,"variant":"slice"}];
+const flowerStickers=[{"id":"flower_rose","name":"Rose","src":"little-journal-assets/flower_rose.svg","allowed":["red","coral","pink","lilac"],"universal":false,"kind":"flower"},{"id":"flower_lavender","name":"Lavender","src":"little-journal-assets/flower_lavender.svg","allowed":["purple","lilac","periwinkle","blue"],"universal":false,"kind":"flower"},{"id":"flower_daisy","name":"Daisy","src":"little-journal-assets/flower_daisy.svg","allowed":["yellow","apricot","beige","green"],"universal":false,"kind":"flower"},{"id":"flower_tulip","name":"Tulip","src":"little-journal-assets/flower_tulip.svg","allowed":["red","coral","pink","purple"],"universal":false,"kind":"flower"},{"id":"flower_hydrangea","name":"Hydrangea","src":"little-journal-assets/flower_hydrangea.svg","allowed":["blue","periwinkle","purple"],"universal":false,"kind":"flower"},{"id":"flower_peony","name":"Peony","src":"little-journal-assets/flower_peony.svg","allowed":["pink","coral","red","lilac"],"universal":false,"kind":"flower"},{"id":"flower_sunflower","name":"Sunflower","src":"little-journal-assets/flower_sunflower.svg","allowed":["yellow","apricot","orange","green"],"universal":false,"kind":"flower"},{"id":"flower_bluebell","name":"Bluebell","src":"little-journal-assets/flower_bluebell.svg","allowed":["blue","periwinkle","lilac","purple"],"universal":false,"kind":"flower"},{"id":"flower_lily","name":"Lily","src":"little-journal-assets/flower_lily.svg","allowed":["pink","lilac","beige","white"],"universal":false,"kind":"flower"},{"id":"flower_poppy","name":"Poppy","src":"little-journal-assets/flower_poppy.svg","allowed":["red","coral","orange"],"universal":false,"kind":"flower"}];
+const flowerPhotoStickers=[{"id":"flower_photo_01","name":"Midnight blue hibiscus","src":"little-journal-assets/flower_photo_01.png","allowed":["blue","periwinkle","purple"],"universal":false,"kind":"flower"},{"id":"flower_photo_02","name":"Charcoal blossom","src":"little-journal-assets/flower_photo_02.png","allowed":["blue","periwinkle","purple"],"universal":false,"kind":"flower"},{"id":"flower_photo_03","name":"Blue star flower","src":"little-journal-assets/flower_photo_03.png","allowed":["blue","periwinkle"],"universal":false,"kind":"flower"},{"id":"flower_photo_04","name":"Misty blue blossom","src":"little-journal-assets/flower_photo_04.png","allowed":["blue","periwinkle"],"universal":false,"kind":"flower"},{"id":"flower_photo_05","name":"Pale blue flower","src":"little-journal-assets/flower_photo_05.png","allowed":["blue","periwinkle"],"universal":false,"kind":"flower"},{"id":"flower_photo_06","name":"Vivid blue hibiscus","src":"little-journal-assets/flower_photo_06.png","allowed":["blue","periwinkle"],"universal":false,"kind":"flower"},{"id":"flower_photo_07","name":"Lace blue flower","src":"little-journal-assets/flower_photo_07.png","allowed":["blue","periwinkle"],"universal":false,"kind":"flower"},{"id":"flower_photo_08","name":"Iridescent hibiscus","src":"little-journal-assets/flower_photo_08.png","allowed":["blue","periwinkle","purple"],"universal":false,"kind":"flower"},{"id":"flower_photo_09","name":"Sage daisy","src":"little-journal-assets/flower_photo_09.png","allowed":["green","mint"],"universal":false,"kind":"flower"},{"id":"flower_photo_10","name":"Soft green blossom","src":"little-journal-assets/flower_photo_10.png","allowed":["green","mint","lime"],"universal":false,"kind":"flower"},{"id":"flower_photo_11","name":"Green orchid","src":"little-journal-assets/flower_photo_11.png","allowed":["green","mint"],"universal":false,"kind":"flower"},{"id":"flower_photo_12","name":"Blush-green hibiscus","src":"little-journal-assets/flower_photo_12.png","allowed":["pink","lilac","green","mint"],"universal":false,"kind":"flower"},{"id":"flower_photo_13","name":"White lily","src":"little-journal-assets/flower_photo_13.png","allowed":["beige","pink","lilac"],"universal":false,"kind":"flower"},{"id":"flower_photo_14","name":"Pink blossom","src":"little-journal-assets/flower_photo_14.png","allowed":["pink","lilac","coral"],"universal":false,"kind":"flower"},{"id":"flower_photo_15","name":"Golden hibiscus","src":"little-journal-assets/flower_photo_15.png","allowed":["yellow","orange","apricot"],"universal":false,"kind":"flower"},{"id":"flower_photo_16","name":"Orange hibiscus","src":"little-journal-assets/flower_photo_16.png","allowed":["orange","apricot","coral"],"universal":false,"kind":"flower"},{"id":"flower_photo_17","name":"Plum lily","src":"little-journal-assets/flower_photo_17.png","allowed":["purple","lilac","pink"],"universal":false,"kind":"flower"},{"id":"flower_photo_18","name":"Bright pink hibiscus","src":"little-journal-assets/flower_photo_18.png","allowed":["pink","coral"],"universal":false,"kind":"flower"},{"id":"flower_photo_19","name":"Blush hibiscus","src":"little-journal-assets/flower_photo_19.png","allowed":["pink","coral"],"universal":false,"kind":"flower"},{"id":"flower_photo_20","name":"Yellow hibiscus","src":"little-journal-assets/flower_photo_20.png","allowed":["yellow","apricot"],"universal":false,"kind":"flower"},{"id":"flower_photo_21","name":"Crimson hibiscus","src":"little-journal-assets/flower_photo_21.png","allowed":["red","coral","pink"],"universal":false,"kind":"flower"},{"id":"flower_photo_22","name":"Watercolor pink flower","src":"little-journal-assets/flower_photo_22.png","allowed":["pink","apricot","coral"],"universal":false,"kind":"flower"},{"id":"flower_photo_23","name":"Golden-orange blossom","src":"little-journal-assets/flower_photo_23.png","allowed":["yellow","orange","apricot"],"universal":false,"kind":"flower"},{"id":"flower_photo_24","name":"Magenta dahlia","src":"little-journal-assets/flower_photo_24.png","allowed":["pink","purple","lilac"],"universal":false,"kind":"flower"},{"id":"flower_photo_25","name":"Burgundy hibiscus","src":"little-journal-assets/flower_photo_25.png","allowed":["red","coral","pink"],"universal":false,"kind":"flower"},{"id":"flower_photo_26","name":"Red lily","src":"little-journal-assets/flower_photo_26.png","allowed":["red","coral","pink"],"universal":false,"kind":"flower"},{"id":"flower_photo_27","name":"Pink-orange flower","src":"little-journal-assets/flower_photo_27.png","allowed":["pink","coral","orange"],"universal":false,"kind":"flower"},{"id":"flower_photo_28","name":"Peach plumeria","src":"little-journal-assets/flower_photo_28.png","allowed":["pink","apricot","orange"],"universal":false,"kind":"flower"}];
+const mcblingStickers=[{"id":"mcbling_001","name":"McBling cut-out 001","src":"little-journal-assets/mcbling_001.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_002","name":"McBling cut-out 002","src":"little-journal-assets/mcbling_002.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_003","name":"McBling cut-out 003","src":"little-journal-assets/mcbling_003.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_004","name":"McBling cut-out 004","src":"little-journal-assets/mcbling_004.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_005","name":"McBling cut-out 005","src":"little-journal-assets/mcbling_005.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_006","name":"McBling strawberry","src":"little-journal-assets/mcbling_006.png","allowed":["red","coral","pink","green","mint","lime"],"universal":true,"kind":"mcbling"},{"id":"mcbling_007","name":"McBling cut-out 007","src":"little-journal-assets/mcbling_007.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_008","name":"McBling cut-out 008","src":"little-journal-assets/mcbling_008.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_009","name":"McBling cut-out 009","src":"little-journal-assets/mcbling_009.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_010","name":"McBling cut-out 010","src":"little-journal-assets/mcbling_010.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_011","name":"McBling cut-out 011","src":"little-journal-assets/mcbling_011.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_012","name":"McBling cut-out 012","src":"little-journal-assets/mcbling_012.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_013","name":"McBling cut-out 013","src":"little-journal-assets/mcbling_013.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_014","name":"McBling cut-out 014","src":"little-journal-assets/mcbling_014.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_015","name":"McBling cut-out 015","src":"little-journal-assets/mcbling_015.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_016","name":"McBling cut-out 016","src":"little-journal-assets/mcbling_016.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_017","name":"McBling cut-out 017","src":"little-journal-assets/mcbling_017.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_018","name":"McBling cut-out 018","src":"little-journal-assets/mcbling_018.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_019","name":"McBling cut-out 019","src":"little-journal-assets/mcbling_019.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_020","name":"McBling cut-out 020","src":"little-journal-assets/mcbling_020.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_021","name":"McBling cut-out 021","src":"little-journal-assets/mcbling_021.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_022","name":"McBling cut-out 022","src":"little-journal-assets/mcbling_022.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_023","name":"McBling cut-out 023","src":"little-journal-assets/mcbling_023.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_024","name":"McBling cut-out 024","src":"little-journal-assets/mcbling_024.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_025","name":"McBling cut-out 025","src":"little-journal-assets/mcbling_025.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_026","name":"McBling cut-out 026","src":"little-journal-assets/mcbling_026.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_027","name":"McBling cut-out 027","src":"little-journal-assets/mcbling_027.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_028","name":"McBling cut-out 028","src":"little-journal-assets/mcbling_028.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_029","name":"McBling cut-out 029","src":"little-journal-assets/mcbling_029.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_030","name":"McBling cut-out 030","src":"little-journal-assets/mcbling_030.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_031","name":"McBling cut-out 031","src":"little-journal-assets/mcbling_031.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_032","name":"McBling cut-out 032","src":"little-journal-assets/mcbling_032.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_033","name":"McBling cut-out 033","src":"little-journal-assets/mcbling_033.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_034","name":"McBling cut-out 034","src":"little-journal-assets/mcbling_034.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_035","name":"McBling cut-out 035","src":"little-journal-assets/mcbling_035.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_036","name":"McBling cut-out 036","src":"little-journal-assets/mcbling_036.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_037","name":"McBling cut-out 037","src":"little-journal-assets/mcbling_037.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_038","name":"McBling cut-out 038","src":"little-journal-assets/mcbling_038.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_039","name":"McBling cut-out 039","src":"little-journal-assets/mcbling_039.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_040","name":"McBling cut-out 040","src":"little-journal-assets/mcbling_040.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_041","name":"McBling cut-out 041","src":"little-journal-assets/mcbling_041.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_042","name":"McBling cut-out 042","src":"little-journal-assets/mcbling_042.png","allowed":["yellow","apricot","lime"],"universal":false,"kind":"mcbling"},{"id":"mcbling_043","name":"McBling cut-out 043","src":"little-journal-assets/mcbling_043.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_044","name":"McBling cut-out 044","src":"little-journal-assets/mcbling_044.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_045","name":"McBling cut-out 045","src":"little-journal-assets/mcbling_045.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_046","name":"McBling cut-out 046","src":"little-journal-assets/mcbling_046.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_047","name":"McBling cut-out 047","src":"little-journal-assets/mcbling_047.png","allowed":["orange","coral","apricot"],"universal":false,"kind":"mcbling"},{"id":"mcbling_048","name":"McBling cut-out 048","src":"little-journal-assets/mcbling_048.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_049","name":"McBling cut-out 049","src":"little-journal-assets/mcbling_049.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_050","name":"McBling cut-out 050","src":"little-journal-assets/mcbling_050.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_051","name":"McBling cut-out 051","src":"little-journal-assets/mcbling_051.png","allowed":["yellow","apricot","lime"],"universal":false,"kind":"mcbling"},{"id":"mcbling_052","name":"McBling cut-out 052","src":"little-journal-assets/mcbling_052.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_053","name":"McBling cut-out 053","src":"little-journal-assets/mcbling_053.png","allowed":["orange","coral","apricot"],"universal":false,"kind":"mcbling"},{"id":"mcbling_054","name":"McBling cut-out 054","src":"little-journal-assets/mcbling_054.png","allowed":["orange","coral","apricot"],"universal":false,"kind":"mcbling"},{"id":"mcbling_055","name":"McBling cut-out 055","src":"little-journal-assets/mcbling_055.png","allowed":["lime","yellow","green"],"universal":false,"kind":"mcbling"},{"id":"mcbling_056","name":"McBling cut-out 056","src":"little-journal-assets/mcbling_056.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_057","name":"McBling cut-out 057","src":"little-journal-assets/mcbling_057.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_058","name":"McBling cut-out 058","src":"little-journal-assets/mcbling_058.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_059","name":"McBling cut-out 059","src":"little-journal-assets/mcbling_059.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_060","name":"McBling cut-out 060","src":"little-journal-assets/mcbling_060.png","allowed":["apricot","orange","yellow"],"universal":false,"kind":"mcbling"},{"id":"mcbling_061","name":"McBling cut-out 061","src":"little-journal-assets/mcbling_061.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_062","name":"McBling cut-out 062","src":"little-journal-assets/mcbling_062.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_063","name":"McBling cut-out 063","src":"little-journal-assets/mcbling_063.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_064","name":"McBling cut-out 064","src":"little-journal-assets/mcbling_064.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_065","name":"McBling cut-out 065","src":"little-journal-assets/mcbling_065.png","allowed":["orange","coral","apricot"],"universal":false,"kind":"mcbling"},{"id":"mcbling_066","name":"McBling cut-out 066","src":"little-journal-assets/mcbling_066.png","allowed":["mint","green","aqua"],"universal":false,"kind":"mcbling"},{"id":"mcbling_067","name":"McBling cut-out 067","src":"little-journal-assets/mcbling_067.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_068","name":"McBling cut-out 068","src":"little-journal-assets/mcbling_068.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_069","name":"McBling cut-out 069","src":"little-journal-assets/mcbling_069.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_070","name":"McBling cut-out 070","src":"little-journal-assets/mcbling_070.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_071","name":"McBling cut-out 071","src":"little-journal-assets/mcbling_071.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_072","name":"McBling cut-out 072","src":"little-journal-assets/mcbling_072.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_073","name":"McBling cut-out 073","src":"little-journal-assets/mcbling_073.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_074","name":"McBling cut-out 074","src":"little-journal-assets/mcbling_074.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_075","name":"McBling cut-out 075","src":"little-journal-assets/mcbling_075.png","allowed":["mint","green","aqua"],"universal":false,"kind":"mcbling"},{"id":"mcbling_076","name":"McBling cut-out 076","src":"little-journal-assets/mcbling_076.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_077","name":"McBling cut-out 077","src":"little-journal-assets/mcbling_077.png","allowed":["mint","green","aqua"],"universal":false,"kind":"mcbling"},{"id":"mcbling_078","name":"McBling cut-out 078","src":"little-journal-assets/mcbling_078.png","allowed":["mint","green","aqua"],"universal":false,"kind":"mcbling"},{"id":"mcbling_079","name":"McBling cut-out 079","src":"little-journal-assets/mcbling_079.png","allowed":["aqua","mint","blue"],"universal":false,"kind":"mcbling"},{"id":"mcbling_080","name":"McBling cut-out 080","src":"little-journal-assets/mcbling_080.png","allowed":["mint","green","aqua"],"universal":false,"kind":"mcbling"},{"id":"mcbling_081","name":"McBling cut-out 081","src":"little-journal-assets/mcbling_081.png","allowed":["periwinkle","blue","purple"],"universal":false,"kind":"mcbling"},{"id":"mcbling_082","name":"McBling cut-out 082","src":"little-journal-assets/mcbling_082.png","allowed":["periwinkle","blue","purple"],"universal":false,"kind":"mcbling"},{"id":"mcbling_083","name":"McBling cut-out 083","src":"little-journal-assets/mcbling_083.png","allowed":["blue","aqua","periwinkle"],"universal":false,"kind":"mcbling"},{"id":"mcbling_084","name":"McBling cut-out 084","src":"little-journal-assets/mcbling_084.png","allowed":["periwinkle","blue","purple"],"universal":false,"kind":"mcbling"},{"id":"mcbling_085","name":"McBling cut-out 085","src":"little-journal-assets/mcbling_085.png","allowed":["periwinkle","blue","purple"],"universal":false,"kind":"mcbling"},{"id":"mcbling_086","name":"McBling cut-out 086","src":"little-journal-assets/mcbling_086.png","allowed":["blue","aqua","periwinkle"],"universal":false,"kind":"mcbling"},{"id":"mcbling_087","name":"McBling cut-out 087","src":"little-journal-assets/mcbling_087.png","allowed":["purple","periwinkle","lilac"],"universal":false,"kind":"mcbling"},{"id":"mcbling_088","name":"McBling cut-out 088","src":"little-journal-assets/mcbling_088.png","allowed":["periwinkle","blue","purple"],"universal":false,"kind":"mcbling"},{"id":"mcbling_089","name":"McBling cut-out 089","src":"little-journal-assets/mcbling_089.png","allowed":["periwinkle","blue","purple"],"universal":false,"kind":"mcbling"},{"id":"mcbling_090","name":"McBling cut-out 090","src":"little-journal-assets/mcbling_090.png","allowed":["purple","periwinkle","lilac"],"universal":false,"kind":"mcbling"},{"id":"mcbling_091","name":"McBling cut-out 091","src":"little-journal-assets/mcbling_091.png","allowed":["periwinkle","blue","purple"],"universal":false,"kind":"mcbling"},{"id":"mcbling_092","name":"McBling cut-out 092","src":"little-journal-assets/mcbling_092.png","allowed":["periwinkle","blue","purple"],"universal":false,"kind":"mcbling"},{"id":"mcbling_093","name":"McBling cut-out 093","src":"little-journal-assets/mcbling_093.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_094","name":"McBling cut-out 094","src":"little-journal-assets/mcbling_094.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_095","name":"McBling cut-out 095","src":"little-journal-assets/mcbling_095.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_096","name":"McBling cut-out 096","src":"little-journal-assets/mcbling_096.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_097","name":"McBling cut-out 097","src":"little-journal-assets/mcbling_097.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_098","name":"McBling cut-out 098","src":"little-journal-assets/mcbling_098.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_099","name":"McBling cut-out 099","src":"little-journal-assets/mcbling_099.png","allowed":["coral","red","orange"],"universal":false,"kind":"mcbling"},{"id":"mcbling_100","name":"McBling cut-out 100","src":"little-journal-assets/mcbling_100.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_101","name":"McBling cut-out 101","src":"little-journal-assets/mcbling_101.png","allowed":["lilac","purple","pink"],"universal":false,"kind":"mcbling"},{"id":"mcbling_102","name":"McBling cut-out 102","src":"little-journal-assets/mcbling_102.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_103","name":"McBling cut-out 103","src":"little-journal-assets/mcbling_103.png","allowed":["red","pink","coral"],"universal":false,"kind":"mcbling"},{"id":"mcbling_104","name":"McBling cut-out 104","src":"little-journal-assets/mcbling_104.png","allowed":["lilac","purple","pink"],"universal":false,"kind":"mcbling"},{"id":"mcbling_105","name":"McBling cut-out 105","src":"little-journal-assets/mcbling_105.png","allowed":["pink","lilac","red"],"universal":false,"kind":"mcbling"},{"id":"mcbling_106","name":"McBling cut-out 106","src":"little-journal-assets/mcbling_106.png","allowed":["lilac","purple","pink"],"universal":false,"kind":"mcbling"}];
+
+// Realistic holographic CD stickers: collectible, color-matched, never universal.
+mcblingStickers.push(
+ {id:'cd_holo_blue',name:'Holographic CD — blue',src:'little-journal-assets/cd_holo_blue.svg',allowed:['blue','periwinkle','aqua'],universal:false,kind:'mcbling'},
+ {id:'cd_holo_lilac',name:'Holographic CD — lilac',src:'little-journal-assets/cd_holo_lilac.svg',allowed:['lilac','purple','periwinkle'],universal:false,kind:'mcbling'},
+ {id:'cd_holo_rose',name:'Holographic CD — rose',src:'little-journal-assets/cd_holo_rose.svg',allowed:['pink','red','coral'],universal:false,kind:'mcbling'}
+);
+const defaults={tasks:[],stickers:[],tapes:[],pages:[{note:'',items:[],tape:'none'}],page:0,doneSubs:0};
+let data=load();
+data.tasks=Array.isArray(data.tasks)?data.tasks:[];data.stickers=Array.isArray(data.stickers)?data.stickers:[];data.tapes=Array.isArray(data.tapes)?data.tapes:[];data.pages=Array.isArray(data.pages)&&data.pages.length?data.pages:[{note:'',items:[],tape:'none'}];
+data.tasks.forEach(t=>{t.subs=Array.isArray(t.subs)?t.subs:[];if(!t.category)t.category=detectCategory(t.name||'')});
+// Repair old saves: a task may already have been completed in a previous version
+// without its sticker record being written. Link old rewards to completed tasks,
+// then award any missing reward once. This also prevents the first sticker getting stuck.
+function taskIsComplete(t){return !!(t&&t.subs&&t.subs.length&&t.subs.every(x=>x.done))}
+const rewardChoicesOpen=new Set();
+function awardStickerForTask(task, quiet=false){
+ const already=data.stickers.some(st=>String(st.taskId||'')===String(task.id));if(already)return false;
+ if(rewardChoicesOpen.has(String(task.id)))return false;
+ const used=new Set(data.stickers.map(st=>st.stickerId).filter(Boolean));
+ const family=paletteFamily(data.page);
+ const candidates=allStickerDefinitions().filter(st=>Array.isArray(st.allowed)&&st.allowed.includes(family)&&!used.has(st.id));
+ if(!candidates.length){toast('Er zijn geen nieuwe stickers meer voor deze kleur. ✿');return false;}
+ // Repairs from an older save are awarded quietly; new task completions show a three-card choice.
+ if(quiet){const nextId=candidates[0].id;const p=pageColors();data.stickers.push({id:Date.now()+Math.random(),taskId:String(task.id),stickerId:nextId,palette:p.name,colors:[p.main,p.mid,p.deep],page:data.page});task.rewardClaimed=true;task.rewarded=taskIsComplete(task);return true;}
+ rewardChoicesOpen.add(String(task.id));
+ const shuffled=[...candidates].sort(()=>Math.random()-.5);const options=shuffled.slice(0,Math.min(3,shuffled.length));
+ const overlay=document.createElement('div');overlay.className='reward-choice-backdrop';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
+ const box=document.createElement('div');box.className='reward-choice';
+ const title=document.createElement('h2');title.textContent='Goed gedaan! ✨';
+ const intro=document.createElement('p');intro.textContent='Kies één van deze stickers als beloning voor je taak.';
+ const grid=document.createElement('div');grid.className='reward-choice-options';
+ options.forEach(def=>{const b=document.createElement('button');b.className='reward-choice-option';const img=document.createElement('img');img.src=def.src;img.alt=def.name;const label=document.createElement('span');label.textContent=def.name;b.append(img,label);b.onclick=()=>{const p=pageColors();data.stickers.push({id:Date.now()+Math.random(),taskId:String(task.id),stickerId:def.id,palette:p.name,colors:[p.main,p.mid,p.deep],page:data.page});task.rewardClaimed=true;task.rewarded=taskIsComplete(task);rewardChoicesOpen.delete(String(task.id));overlay.remove();save();renderTasks();renderJournal();renderCollection();toast('Je hebt '+def.name+' vrijgespeeld! 💗');};grid.append(b)});
+ const close=document.createElement('button');close.className='reward-choice-close';close.textContent='Later kiezen';close.onclick=()=>{rewardChoicesOpen.delete(String(task.id));overlay.remove();};
+ box.append(title,intro,grid,close);overlay.append(box);document.body.append(overlay);return true;
+}
+// Oude versies lieten fruit rechtstreeks uit de stickerstudio op pagina's zetten.
+// Behoud alleen fruit dat ook echt via een afgeronde taak is vrijgespeeld.
+data.pages=data.pages.map(page=>({...page,items:(page.items||[]).map(item=>{if(item&&typeof item==='object'&&item.kind==='fruit'){let earned=data.stickers.find(st=>st.stickerId===item.stickerId);return earned?earned.id:null}return item}).filter(item=>item!==null)}));
+function load(){try{return {...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return structuredClone(defaults)}}
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+const $=id=>document.getElementById(id);
+// Een lange, doorlopende regenboog van lichte en levendige tinten.
+// Geen grijs-, zwart- of wittinten: wel zachte blauwen, lila's en warme beige/peach tinten.
+const palettes = Array.from({length:180},(_,i)=>{
+ const hue=(i*2.15)%360; // rood -> oranje -> geel -> groen -> blauw -> paars -> roze
+ const light=76+Math.sin(i*0.47)*7;
+ const sat=66+Math.sin(i*0.31)*12;
+ const main=`hsl(${hue},${sat}%,${light}%)`;
+ const mid=`hsl(${hue},${Math.min(90,sat+7)}%,${Math.max(62,light-7)}%)`;
+ const deep=`hsl(${hue},${Math.min(92,sat+10)}%,${Math.max(52,light-17)}%)`;
+ const dark=`hsl(${hue},${Math.min(88,sat+8)}%,${Math.max(38,light-29)}%)`;
+ const pale=`hsl(${hue},${Math.max(42,sat-10)}%,${Math.min(94,light+12)}%)`;
+ const names=['red','coral','orange','apricot','yellow','lime','green','mint','aqua','blue','periwinkle','purple','lilac','pink'];
+ const name=names[Math.floor(hue/360*names.length)%names.length];
+ return [`${name} shade ${i+1}`,main,mid,deep,dark,pale];
+});
+const firstStickerRewards=['fruit_whole_5','flower_rose','fruit_whole_2','flower_lavender','fruit_whole_3','flower_daisy','fruit_whole_4','flower_tulip','fruit_whole_6','flower_hydrangea','fruit_whole_7','flower_peony','fruit_whole_8','flower_sunflower','fruit_whole_9','flower_bluebell','fruit_whole_10','flower_lily','fruit_whole_11','flower_poppy'];
+const stickerRewardIds=[...firstStickerRewards,...fruitStickers.map(x=>x.id).filter(id=>!firstStickerRewards.includes(id)),...flowerStickers.map(x=>x.id).filter(id=>!firstStickerRewards.includes(id)),...flowerPhotoStickers.map(x=>x.id),...mcblingStickers.map(x=>x.id)];
+function getStickerDef(id){return fruitStickers.find(x=>x.id===id)||flowerStickers.find(x=>x.id===id)||flowerPhotoStickers.find(x=>x.id===id)||mcblingStickers.find(x=>x.id===id)||null}
+
+const tapeNames=['Tiny scallops','Lace edge','Dainty flowers','Little bows','Vintage dots','Floral border','Soft gingham','Pearl trim'];
+function paletteFor(page){return palettes[((page%palettes.length)+palettes.length)%palettes.length]}
+function pageColors(){let p=paletteFor(data.page);return {name:p[0],main:p[1],mid:p[2],deep:p[3],dark:p[4],pale:p[5]}}
+function showView(v){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===v));document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='journal')renderJournal();if(v==='collection')renderCollection();if(v==='tools')renderTools()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>showView(b.dataset.view));
+function toast(msg){let t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2300)}
+const categoryInfo={selfcare:{label:'Selfcare',color:'#ffe8f0'},work:{label:'School / werk',color:'#ffeedc'},home:{label:'Huishouden',color:'#e5f4e9'},social:{label:'Sociaal',color:'#eee7fa'},hobby:{label:'Hobby / vrije tijd',color:'#fff5cf'},errands:{label:'Boodschappen',color:'#e4f1fb'}};
+function detectCategory(text){let x=text.toLowerCase();if(/skincare|skin care|self.?care|douchen|bad nemen|haar wassen|hair.?care|gezichtsmasker|nagels|make.?up|tanden poetsen|ontspannen|mediteren|wellness/.test(x))return 'selfcare';if(/huiswerk|school|leren|studeren|proefwerk|toets|werkstuk|biologie|wiskunde|frans|engels|werk|presentatie|les/.test(x))return 'work';if(/opruimen|schoonmaken|stofzuigen|afwassen|was doen|kamer|bed verschonen|vuilnis|huishouden/.test(x))return 'home';if(/vriend|vriendin|afspreken|bellen|familie|verjaardag|feest|date/.test(x))return 'social';if(/tekenen|schilderen|lezen|gamen|knutselen|journal|hobby|muziek|sport|wandelen/.test(x))return 'hobby';if(/boodschappen|winkel|supermarkt|pakket ophalen|post|apotheek/.test(x))return 'errands';return 'hobby'}
+
+(function repairSavedRewards(){
+ const eligible=data.tasks.filter(t=>t.rewardClaimed||t.rewarded||taskIsComplete(t));
+ const unlinked=data.stickers.filter(st=>!st.taskId);
+ unlinked.forEach((st,i)=>{if(eligible[i])st.taskId=String(eligible[i].id)});
+ // Remove duplicate copies of the same collectible caused by older test versions.
+ const seen=new Set();data.stickers=data.stickers.filter(st=>{if(!st.stickerId)return true;if(seen.has(st.stickerId))return false;seen.add(st.stickerId);return true});
+ data.tasks.forEach(t=>{
+  const has=data.stickers.some(st=>String(st.taskId||'')===String(t.id));
+  if(!has&&(taskIsComplete(t)||t.rewardClaimed||t.rewarded))awardStickerForTask(t,true);
+  const nowHas=data.stickers.some(st=>String(st.taskId||'')===String(t.id));
+  t.rewardClaimed=!!(t.rewardClaimed||t.rewarded||nowHas);t.rewarded=taskIsComplete(t)&&t.rewardClaimed;
+ });
+ data.doneSubs=data.tasks.reduce((sum,t)=>sum+t.subs.filter(s=>s.done).length,0);
+})();
+$('taskForm').onsubmit=e=>{e.preventDefault();let name=$('taskInput').value.trim();if(!name)return;data.tasks.push({id:Date.now()+Math.random(),name,category:detectCategory(name),subs:[],rewarded:false});$('taskInput').value='';save();renderTasks()};
+function addSub(id,input){let val=input.value.trim();if(!val)return;let t=data.tasks.find(x=>x.id===id);t.subs.push({id:Date.now()+Math.random(),name:val,done:false});input.value='';save();renderTasks()}
+function toggleSub(tid,sid,checked){let t=data.tasks.find(x=>x.id===tid),s=t.subs.find(x=>x.id===sid);if(s.done===checked)return;s.done=checked;data.doneSubs+=checked?1:-1;
+ let all=t.subs.length>0&&t.subs.every(x=>x.done);
+ if(all&&!t.rewardClaimed)awardStickerForTask(t);
+ if(!all&&t.rewarded){t.rewarded=false;toast('Taak is weer geopend — je eerder verdiende sticker blijft van jou ♡')}
+ unlockTapes();save();renderTasks();renderJournal();renderCollection();
+}
+function unlockTapes(){let should=Math.floor(Math.max(0,data.doneSubs-1)/5);while(data.tapes.length<should){let i=data.tapes.length;data.tapes.push({id:i,name:tapeNames[i%tapeNames.length]});toast('Nieuwe washi tape unlocked! 🎀')}}
+function renderTasks(){
+ let list=$('tasksList');list.innerHTML='';
+ if(!data.tasks.length)list.innerHTML='<div class="empty">Je lijst is nog leeg. Voeg je eerste taak toe ♡</div>';
+ data.tasks.forEach(t=>{let done=t.subs.length>0&&t.subs.every(s=>s.done);let el=document.createElement('div');let cat=t.category||detectCategory(t.name);t.category=cat;el.className='task cat-'+cat+(done?' done':'');
+ let top=document.createElement('div');top.className='task-top';top.innerHTML=`<span>${done?'✓':'✿'}</span><strong class="task-name"></strong><button class="tiny" style="background:none" aria-label="Verwijder taak">✕</button>`;top.querySelector('strong').textContent=t.name;let category=document.createElement('select');category.className='task-category';Object.entries(categoryInfo).forEach(([k,v])=>{let o=document.createElement('option');o.value=k;o.textContent=v.label;category.append(o)});category.value=cat;category.onchange=()=>{t.category=category.value;save();renderTasks()};top.insertBefore(category,top.querySelector('button'));top.querySelector('button').onclick=()=>{data.tasks=data.tasks.filter(x=>x.id!==t.id);save();renderTasks()};el.append(top);
+ let subs=document.createElement('div');subs.className='subtasks';t.subs.forEach(s=>{let row=document.createElement('label');row.className='sub';let cb=document.createElement('input');cb.type='checkbox';cb.className='check';cb.checked=s.done;cb.onchange=()=>toggleSub(t.id,s.id,cb.checked);let span=document.createElement('span');span.textContent=s.name;row.append(cb,span);subs.append(row)});
+ let form=document.createElement('form');form.className='sub-form';let inp=document.createElement('input');inp.placeholder='Nieuwe subt taak...';inp.maxLength=90;let btn=document.createElement('button');btn.className='soft-btn';btn.textContent='+ Add';form.append(inp,btn);form.onsubmit=e=>{e.preventDefault();addSub(t.id,inp)};subs.append(form);let count=document.createElement('div');count.className='tiny';count.style.marginTop='8px';count.textContent=`${t.subs.filter(s=>s.done).length}/${t.subs.length} subtaken afgerond`+(t.rewarded?' · sticker verdiend ✿':'');subs.append(count);el.append(subs);list.append(el)});
+ let total=data.tasks.reduce((a,t)=>a+t.subs.length,0),done=data.tasks.reduce((a,t)=>a+t.subs.filter(s=>s.done).length,0);$('progressText').textContent=`${done} / ${total}`;$('progressBar').style.width=(total?done/total*100:0)+'%';$('stickerCount').textContent=data.stickers.length;$('tapeCount').textContent=data.tapes.length;
+}
+function renderJournal(){
+ let p=pageColors(),page=data.pages[data.page]||{note:'',items:[],tape:'none'};$('journalPage').style.setProperty('--page',p.main);$('journalPage').style.setProperty('--deep',p.dark);$('journalPage').style.setProperty('--pale',p.pale);$('pageColorName').textContent=p.name;$('pageTitle').textContent='A page of my own';$('pageCount').textContent=data.hidePageNumbers?'':`Page ${data.page+1} of ${data.pages.length}`;$('journalNote').value=page.note||'';$('journalNote').oninput=()=>{page.note=$('journalNote').value;save()};
+ $('palette').innerHTML=[p.main,p.mid,p.deep,p.dark,p.pale].map(c=>`<span class="swatch" style="background:${c}"></span>`).join('');$('paletteLabel').textContent=p.name+' · rainbow shade '+(data.page+1);
+ $('topTape').style.background=`repeating-linear-gradient(135deg,${p.deep} 0 5px,${p.pale} 5px 10px)`;$('bottomTape').style.background=`radial-gradient(circle at 10px 0,transparent 8px,${p.deep} 8.5px 10px,transparent 10.5px) 0 0/20px 20px repeat-x,linear-gradient(${p.main},${p.main})`;
+ $('stickerCanvas').innerHTML='';(page.items||[]).forEach((item,i)=>{
+  let span=document.createElement('span');span.className='placed';span.style.color=p.dark;
+  let remove=()=>{page.items=page.items.filter((x,j)=>j!==i);save();renderJournal()};
+  if(typeof item==='object'&&(item.kind==='text'||item.kind==='handwriting'||item.kind==='handwritten')){
+   span.className='placed handwriting-placed';let font=['font-connected','font-elegant','font-playful','font-thin','font-parisienne','font-sweet'].includes(item.font)?item.font:'font-connected';span.classList.add(font);
+   const savedHandText=[item.text,item.value,item.content,item.label].find(v=>typeof v==='string'&&v.length>0)??'';span.textContent=String(savedHandText);span.style.display='inline-block';span.style.visibility='visible';span.style.opacity='1';span.style.fontSize='28px';span.style.whiteSpace='pre-wrap';span.style.overflowWrap='anywhere';span.style.wordBreak='normal';span.style.width='max-content';span.style.maxWidth='100%';span.style.minWidth='2ch';span.style.minHeight='1.5em';span.style.padding='5px 10px';span.style.color=p.dark;span.style.lineHeight='1.45';span.style.textIndent='0';span.style.fontFamily=font==='font-connected'?"'Dancing Script','Segoe Print',cursive":font==='font-elegant'?"'Great Vibes','Segoe Print',cursive":font==='font-playful'?"'Caveat','Comic Sans MS',cursive":font==='font-parisienne'?"'Parisienne','Segoe Script',cursive":font==='font-sweet'?"'Allura','Dancing Script',cursive":"'Satisfy','Segoe Print',cursive";span.title='Handgeschreven tekst — klik om te verwijderen';
+  }else if(typeof item==='object'&&item.kind==='ransom'){
+   span.classList.add('ransom-group');appendRansomLetters(span,String(item.text||''),true);
+  }else if(typeof item==='object'&&item.kind==='ransom-letter'){
+   if(item.char===' '){span.className='placed ransom-space';span.textContent='\u00a0'}else{styleRansomLetter(span,item.char,item.index||i)}
+  }else if(typeof item==='object'&&item.kind==='ransom-space'){
+   span.className='placed ransom-space';span.textContent='\u00a0';
+  }else if(typeof item==='object'&&item.kind==='fruit'){
+   let fruit=getStickerDef(item.stickerId);if(fruit){span.classList.add('fruit-placed');let img=document.createElement('img');img.src=fruit.src;img.alt=fruit.name;span.append(img)}
+  }else if(typeof item==='object'&&item.kind==='decor'){
+   span.classList.add('stamp-placed');span.innerHTML=item.markup||'';if(item.type==='universal')span.style.filter=`hue-rotate(${item.hue||0}deg)`;else span.style.filter='none';
+  }else{
+   let st=data.stickers.find(x=>x.id===item);if(!st)return;let design=getStickerDef(st.stickerId);
+   if(design){const isCd=design.id.startsWith('cd_holo_');span.classList.add(isCd?'cd-placed':(design.kind==='flower'?'flower-placed':(design.kind==='mcbling'?'mcbling-placed':'fruit-placed')));let img=document.createElement('img');img.src=design.src;img.alt=design.name;span.append(img)}
+   else{let label=stickerBankItems.find(x=>x.id===st.stickerId);if(label){span.classList.add('stamp-placed');span.innerHTML=stickerMarkup(label)}else{span.textContent=st.emoji||'✿'}}
+  }
+  span.title='Klik om dit element weg te halen';span.onclick=remove;$('stickerCanvas').append(span)
+ });
+ $('journalStickers').innerHTML='';if(!data.stickers.length)$('journalStickers').innerHTML='<div class="empty">Verdien stickers door taken af te ronden!</div>';
+ data.stickers.forEach(st=>{
+  let b=document.createElement('button');let design=getStickerDef(st.stickerId);let label=stickerBankItems.find(x=>x.id===st.stickerId);
+  if(design){let isFlower=design.kind==='flower';let isCd=design.kind==='mcbling'&&design.id.startsWith('cd_holo_');b.className='sticker-pick '+(isCd?'cd-pick':(isFlower?'flower-pick':'fruit-pick'));let img=document.createElement('img');img.src=design.src;img.alt=design.name;b.append(img);let ok=design.allowed.includes(paletteFamily(data.page));b.disabled=!ok;b.title=ok?design.name+' — klik om toe te voegen':design.name+' past niet bij deze paginakleur';if(!ok){let lock=document.createElement('span');lock.className='tiny-lock';lock.textContent='🔒';b.append(lock)}}
+  else{b.innerHTML=label?stickerMarkup(label):(st.emoji||'✿');b.title=st.palette+' sticker'}
+  b.onclick=()=>{if(b.disabled)return;page.items.push(st.id);save();renderJournal();toast('Sticker op je pagina geplakt!')};$('journalStickers').append(b)
+ });
+ $('stickerBank').innerHTML='';let status=document.createElement('div');status.className='unlock-status-text';let earnedCount=data.stickers.length;let totalRewards=stickerRewardIds.length;
+ status.textContent=earnedCount===0?'🔒 Nog geen stickers vrijgespeeld. Rond alle subtaken van je eerste taak af om je eerste sticker te verdienen.':earnedCount>=totalRewards?`Je hebt alle ${totalRewards} stickers vrijgespeeld! Kijk bij My stickers om ze te gebruiken.`:`${earnedCount} van de ${totalRewards} stickers vrijgespeeld. Rond alle subtaken van een volgende taak af voor een nieuwe verrassing!`;$('stickerBank').append(status);
+ $('journalTapes').innerHTML='';let none=document.createElement('div');none.className='tiny';none.textContent='Kies een tape om hem op je pagina te gebruiken:';$('journalTapes').append(none);
+ data.tapes.forEach((t,i)=>{let row=document.createElement('div');row.className='tape-option';let b=document.createElement('button');b.textContent='✿ '+t.name;b.onclick=()=>{page.tape=t.id;let target=$('topTape');target.style.height='30px';target.style.background=i%2?`radial-gradient(circle at 10px 0,transparent 8px,${p.deep} 8.5px 10px,transparent 10.5px) 0 0/20px 20px repeat-x,linear-gradient(${p.main},${p.main})`:`repeating-linear-gradient(135deg,${p.deep} 0 5px,${p.pale} 5px 10px)`;save();toast('Washi tape toegevoegd!')};row.append(b);$('journalTapes').append(row)});
+ if(!data.tapes.length)$('journalTapes').insertAdjacentHTML('beforeend','<p class="tiny lock">🔒 Je eerste tape unlock je na 6 afgeronde subtaken.</p>');
+ updatePageGateUI();
+}
+$('prevPage').onclick=()=>{if(data.page>0){data.page--;save();renderJournal()}};
+$('nextPage').onclick=()=>{const g=pageGateProgress();if(!g.colorComplete){toast(`Je moet eerst alle ${g.eligible} stickers van ${g.family} verdienen. Nog ${g.missingForColor} te gaan! 🔒`);return}if(!g.pageFull){toast(`Deze pagina is nog niet vol. Plak nog ${g.fillTarget-g.placed} stickers! ✨`);return}data.page++;if(!data.pages[data.page])data.pages.push({note:'',items:[],tape:'none'});save();renderJournal();toast('Nieuwe regenboogtint ontgrendeld! 🌈')};
+function renderCollection(){
+ $('allStickers').innerHTML='';if(!data.stickers.length)$('allStickers').innerHTML='<div class="empty">Nog geen stickers. Je kunt ze verdienen via je taken!</div>';
+ data.stickers.forEach(st=>{let d=document.createElement('div');let design=getStickerDef(st.stickerId);d.className='reward '+(design?(design.id.startsWith('cd_holo_')?'cd-reward':(design.kind==='flower'?'flower-reward':(design.kind==='mcbling'?'mcbling-reward':'fruit-reward'))):'');
+ if(design){let img=document.createElement('img');img.src=design.src;img.alt=design.name;d.append(img)}else{let mark=stickerBankItems.find(x=>x.id===st.stickerId);if(mark){let art=document.createElement('div');art.className='placed stamp-placed';art.innerHTML=stickerMarkup(mark);d.append(art)}else{let em=document.createElement('span');em.className='emoji';em.textContent=st.emoji||'✿';d.append(em)}}
+ let caption=document.createElement('span');caption.className='tiny';caption.textContent=design?design.name:st.palette||'Sticker';d.append(caption);$('allStickers').append(d)
+ });
+ $('allTapes').innerHTML='';if(!data.tapes.length)$('allTapes').innerHTML='<div class="empty">Nog vergrendeld. Rond 6 subtaken af om de eerste tape te verdienen.</div>';
+ data.tapes.forEach(t=>{let d=document.createElement('div');d.className='reward';d.style.display='inline-block';d.innerHTML=`<span class="emoji">🎀</span><span class="tiny"></span>`;d.querySelector('.tiny').textContent=t.name;$('allTapes').append(d)});
+}
+
+const stickerBankItems=[
+ {id:'berry',name:'Wild berry',sub:'FRESH • PICKED',art:'BERRY',type:'natural',style:'fruit',shape:'label'},
+ {id:'citrus',name:'Sunny citrus',sub:'ORCHARD SELECT',art:'CITRUS',type:'natural',style:'cream',shape:'round'},
+ {id:'strawberry',name:'Strawberry',sub:'SWEET & RIPE',art:'STRAWBERRY',type:'natural',style:'rose',shape:'label'},
+ {id:'blueberry',name:'Blueberry',sub:'NORTH GARDEN',art:'BLUEBERRY',type:'natural',style:'blue',shape:'round'},
+ {id:'orchid',name:'Orchid',sub:'BOTANICAL SERIES',art:'ORCHID',type:'natural',style:'flower',shape:'stamp'},
+ {id:'blossom',name:'Blossom',sub:'SPRING • 1976',art:'BLOSSOM',type:'natural',style:'rose',shape:'stamp'},
+ {id:'wildflower',name:'Wildflower',sub:'FIELD NOTES',art:'WILDFLOWER',type:'natural',style:'cream',shape:'stamp'},
+ {id:'postage',name:'Postage',sub:'BOTANICAL MAIL',art:'POST',type:'universal',style:'blue',shape:'stamp'},
+ {id:'market',name:'Market label',sub:'GOOD THINGS',art:'MARKET',type:'universal',style:'fruit',shape:'label'},
+ {id:'vintage',name:'Vintage seal',sub:'EST. 1976',art:'VINTAGE',type:'universal',style:'cream',shape:'round'},
+ {id:'garden',name:'Garden note',sub:'GROWN WITH LOVE',art:'GARDEN',type:'natural',style:'flower',shape:'label'},
+ {id:'cocoa',name:'Old paper',sub:'COLLECTORS EDITION',art:'COLLECT',type:'universal',style:'cream',shape:'stamp'}
+];
+function stickerMarkup(item){const glyph=item.shape==='stamp'?'✿':item.shape==='round'?'✽':'✦';return `<span class="stamp-art">${glyph}</span><span class="stamp-name">${item.art}</span><span class="stamp-sub">${item.sub}</span><span class="barcode">▥ ▥ ▥ ▥</span>`}
+function addDecorItem(item){let page=data.pages[data.page];page.items=page.items||[];page.items.push({kind:'decor',type:item.type,hue:Number($('universalHue').value||0),markup:stickerMarkup(item),style:item.style});save();renderJournal();toast('Papieren sticker toegevoegd! ✿')}
+function paletteFamily(pageIndex){const hue=(pageIndex*2.15)%360;const names=['red','coral','orange','apricot','yellow','lime','green','mint','aqua','blue','periwinkle','purple','lilac','pink'];return names[Math.floor(hue/(360/names.length))%names.length]}
+const PAGE_FILL_TARGET=12;
+function allStickerDefinitions(){return [...fruitStickers,...flowerStickers,...flowerPhotoStickers,...mcblingStickers]}
+function pageGateProgress(pageIndex=data.page){
+ const family=paletteFamily(pageIndex);
+ const eligible=allStickerDefinitions().filter(st=>Array.isArray(st.allowed)&&st.allowed.includes(family));
+ const earnedIds=new Set(data.stickers.map(st=>st.stickerId));
+ const earnedForColor=eligible.filter(st=>earnedIds.has(st.id)).length;
+ const missingForColor=Math.max(0,eligible.length-earnedForColor);
+ const page=data.pages[pageIndex]||{items:[]};
+ const placedIds=new Set(data.stickers.map(st=>String(st.id)));
+ const placed=(page.items||[]).filter(item=> (typeof item==='number'||typeof item==='string') && placedIds.has(String(item))).length;
+ return {family,eligible:eligible.length,earnedForColor,missingForColor,placed,fillTarget:PAGE_FILL_TARGET,colorComplete:eligible.length>0&&missingForColor===0,pageFull:placed>=PAGE_FILL_TARGET,ready:eligible.length>0&&missingForColor===0&&placed>=PAGE_FILL_TARGET};
+}
+function updatePageGateUI(){
+ const g=pageGateProgress();const status=$('pageUnlockStatus');const btn=$('nextPage');
+ if(status){
+  const pct=g.eligible?Math.round(g.earnedForColor/g.eligible*100):0;
+  const fillPct=Math.min(100,Math.round(g.placed/g.fillTarget*100));
+  const headline=g.ready?'Deze pagina is klaar! ✨': 'Vul deze kleurpagina helemaal met stickers';
+  const colorLine=`Kleur: ${g.family}. Verdiende stickers van deze kleur: ${g.earnedForColor}/${g.eligible}.`;
+  const pageLine=`Op deze pagina geplakt: ${g.placed}/${g.fillTarget} stickers.`;
+  const blockedLine=!g.colorComplete?`Je mist nog ${g.missingForColor} sticker(s) van deze kleur.`:(!g.pageFull?`Plak nog ${g.fillTarget-g.placed} sticker(s) op deze pagina.`:'Je mag door naar de volgende tint!');
+  status.innerHTML='';let strong=document.createElement('strong');strong.textContent=headline;let detail=document.createElement('div');detail.textContent=colorLine+' '+pageLine+' '+blockedLine;let bar1=document.createElement('div');bar1.className='gate-progress';let fill1=document.createElement('span');fill1.style.width=pct+'%';bar1.append(fill1);let bar2=document.createElement('div');bar2.className='gate-progress';let fill2=document.createElement('span');fill2.style.width=fillPct+'%';bar2.append(fill2);status.append(strong,detail,bar1,bar2);status.style.borderColor=g.ready?'#e8c1d6':'#e9d8d2';
+ }
+ if(btn){btn.classList.toggle('is-locked',!g.ready);btn.classList.toggle('is-ready',g.ready);btn.textContent=g.ready?'→ Volgende pagina ✧':'→ Volgende pagina 🔒';btn.setAttribute('aria-disabled',String(!g.ready));btn.title=g.ready?'Je hebt deze tint afgerond':'Verdien alle stickers van deze kleur en plak 12 stickers op deze pagina';}
+}
+
+function ransomStyle(index){
+ const papers=['#f5eedf','#e8e4d9','#f1e4da','#ece8f3','#f4edcf','#e1e9e4','#f3dfe0','#e8dfd1','#f0d8d7','#dfe9ee','#f6e8c7','#e8d9ee'];
+ const inks=['#443d39','#293c48','#744d57','#4e4b40','#5c476a','#344c42','#61462f','#373a3d','#9a3441','#365b78','#6b4d2e','#875d86'];
+ const fonts=["Georgia,serif","'Times New Roman',serif","Arial,sans-serif","'Courier New',monospace","'Trebuchet MS',sans-serif","'Palatino Linotype',serif","'Arial Black',sans-serif","Garamond,serif","'Bodoni MT',serif","'Bookman Old Style',serif","'Rockwell',serif","'Lucida Bright',serif"]; 
+ const cuts=[
+  'polygon(2% 1%,96% 0,100% 8%,98% 94%,91% 100%,5% 98%,0 90%,1% 7%)',
+  'polygon(0 4%,92% 0,100% 6%,97% 97%,8% 100%,2% 92%)',
+  'polygon(4% 0,100% 3%,97% 91%,92% 100%,0 96%,2% 10%)',
+  'polygon(1% 0,98% 2%,100% 93%,90% 98%,5% 100%,0 8%)',
+  'polygon(0 0,94% 2%,100% 15%,97% 100%,8% 96%,0 83%)',
+  'polygon(4% 0,100% 0,96% 100%,15% 97%,0 88%)',
+  'polygon(0 8%,8% 0,96% 3%,100% 90%,90% 100%,2% 96%)'
+ ];
+ return {paper:papers[index%papers.length],ink:inks[(index*3)%inks.length],font:fonts[(index*5)%fonts.length],size:19+(index*7%12),tilt:((index%7)-3)*2,cut:cuts[index%cuts.length]};
+}
+function styleRansomLetter(el,ch,index){
+ const st=ransomStyle(index);el.classList.add('ransom-letter');el.textContent=ch;
+ el.style.backgroundColor=st.paper;el.style.backgroundImage='repeating-linear-gradient(0deg,transparent 0 7px,rgba(93,78,65,.055) 7px 8px)';
+ el.style.color=st.ink;el.style.fontFamily=st.font;el.style.fontSize=st.size+'px';el.style.fontWeight=index%3===0?'800':'700';
+ el.style.transform=`rotate(${st.tilt}deg)`;el.style.clipPath=st.cut;el.style.borderRadius=(index%4===0?'2px':'0');
+ el.style.textShadow='0 .2px currentColor';el.style.filter='drop-shadow(1px 2px 1px #5c46332a)';
+ el.title='Los uitgeknipt letterpapiertje — klik om te verwijderen';
+}
+function appendRansomLetters(box,text,insideJournal=false){[...text].forEach((ch,i)=>{let el=document.createElement('span');if(ch===' '){el.className='ransom-space';el.textContent='\u00a0'}else styleRansomLetter(el,ch,i);box.append(el)})}
+function renderTools(){
+ const value=$('handText').value;const preview=$('handPreview');const font=['font-connected','font-elegant','font-playful','font-thin','font-parisienne','font-sweet'].includes($('handFont').value)?$('handFont').value:'font-connected';
+ preview.className='hand-preview '+font;preview.textContent=value.length?value:'Je tekst verschijnt hier in je gekozen handschrift…';preview.setAttribute('aria-live','polite');preview.style.display='block';preview.style.minHeight='96px';preview.style.visibility='visible';preview.style.opacity=value.length?'1':'.65';preview.style.color='#705267';
+ renderRansom();
+}
+function renderRansom(){let box=$('ransomPreview');box.innerHTML='';let value=$('ransomText').value||'DREAM BIG';appendRansomLetters(box,value)}
+$('handText').addEventListener('input',renderTools);$('handFont').addEventListener('change',renderTools);$('ransomText').addEventListener('input',renderRansom);
+$('addHandwriting').onclick=()=>{let value=$('handText').value;if(!value.trim()){toast('Typ eerst je tekst in het vakje ♡');$('handText').focus();return}let page=data.pages[data.page];page.items=page.items||[];page.items.push({kind:'text',text:value,font:$('handFont').value});save();renderJournal();toast('Je handgeschreven tekst is toegevoegd!')};
+$('addRansom').onclick=()=>{let value=$('ransomText').value;if(!value.trim()){toast('Typ eerst letters of een woord ✂');$('ransomText').focus();return}let page=data.pages[data.page];page.items=page.items||[];let base=page.items.length;[...value].forEach((ch,i)=>page.items.push({kind:ch===' '?'ransom-space':'ransom-letter',char:ch,index:base+i}));save();renderJournal();toast('Losse knipletters toegevoegd! ✂')};
+renderTools();
+
+$('hidePageNumbers').checked=!!data.hidePageNumbers;
+$('hidePageNumbers').onchange=()=>{data.hidePageNumbers=$('hidePageNumbers').checked;save();renderJournal()};
+renderTasks();renderJournal();renderCollection();
+</script>
+</body></html>

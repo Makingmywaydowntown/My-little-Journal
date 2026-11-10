@@ -1,0 +1,18 @@
+LITTLE JOURNAL — UPDATE V6
+
+Dit ZIP-bestand bevat de volledige Little Journal-site en de volledige map little-journal-assets.
+
+Nieuw in deze versie:
+- Iedere journalpagina heeft één effen regenboogkleur. De tint verandert per pagina.
+- Je kunt pas naar de volgende pagina als je minstens 12 stickers op de huidige pagina hebt geplakt én alle stickers die bij de huidige kleurfamilie horen hebt vrijgespeeld.
+- De pagina toont de voortgang van beide voorwaarden.
+- Drie nieuwe, glanzende holografische CD-stickers zijn toegevoegd als verdiende, kleurgebonden stickers (niet universeel).
+- De bestaande fruit-, bloemen- en McBling-stickers, knipletters en handschriftfuncties blijven inbegrepen.
+
+GitHub Pages bijwerken:
+1. Pak dit ZIP-bestand uit.
+2. Upload/vervang index.html in de hoofdmap van je repository.
+3. Upload de volledige map little-journal-assets en laat de mapstructuur intact (vervang de bestaande map met dezelfde naam).
+4. Commit changes en ververs je vaste websiteadres met Ctrl+F5.
+
+De website gebruikt dezelfde localStorage-sleutel als de vorige Little Journal-versie, zodat bestaande voortgang in dezelfde browser behouden blijft.
