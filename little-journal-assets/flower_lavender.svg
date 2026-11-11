@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+<defs><filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter><linearGradient id="paper" x2="0" y2="1"><stop stop-color="#fffdf7"/><stop offset="1" stop-color="#f4e9d7"/></linearGradient></defs>
+<path d="M57 42 Q200 12 340 49 L357 340 Q205 383 44 341Z" fill="#6b5846" opacity=".16" filter="url(#shadow)" transform="translate(4 7)"/>
+<path d="M57 42 Q200 12 340 49 L357 340 Q205 383 44 341Z" fill="url(#paper)" stroke="#fffdf5" stroke-width="18"/>
+<path d="M69 54 Q200 28 327 60 L342 328 Q205 365 59 329Z" fill="none" stroke="#c9b697" stroke-width="3" stroke-dasharray="3 7"/>
+<g><path d="M198 175 Q205 265 174 340" stroke="#64835d" stroke-width="13" fill="none" stroke-linecap="round"/><ellipse cx="180" cy="90" rx="18" ry="29" transform="rotate(-25 180 90)" fill="#c2a8df" stroke="#8065a9" stroke-width="5"/><ellipse cx="198" cy="115" rx="18" ry="29" transform="rotate(-3 198 115)" fill="#c2a8df" stroke="#8065a9" stroke-width="5"/><ellipse cx="216" cy="140" rx="18" ry="29" transform="rotate(19 216 140)" fill="#c2a8df" stroke="#8065a9" stroke-width="5"/><ellipse cx="180" cy="165" rx="18" ry="29" transform="rotate(-25 180 165)" fill="#c2a8df" stroke="#8065a9" stroke-width="5"/><ellipse cx="198" cy="190" rx="18" ry="29" transform="rotate(-3 198 190)" fill="#c2a8df" stroke="#8065a9" stroke-width="5"/></g>
+<text x="200" y="372" text-anchor="middle" font-family="Georgia,serif" font-size="16" letter-spacing="3" fill="#6b5a49">LAVENDER</text>
+</svg>

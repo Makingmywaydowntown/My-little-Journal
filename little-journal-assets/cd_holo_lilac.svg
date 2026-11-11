@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+<defs>
+ <radialGradient id="disc" cx="34%" cy="27%" r="78%"><stop offset="0" stop-color="#ffffff"/><stop offset=".19" stop-color="#f5eaff"/><stop offset=".37" stop-color="#d6c5e8"/><stop offset=".52" stop-color="#f8e8ef"/><stop offset=".66" stop-color="#cbbce5"/><stop offset=".81" stop-color="#e9d4f5"/><stop offset="1" stop-color="#8b78a8"/></radialGradient>
+ <radialGradient id="label" cx="30%" cy="25%"><stop stop-color="#fbf0ff"/><stop offset=".56" stop-color="#ab8bc9"/><stop offset="1" stop-color="#594476"/></radialGradient>
+ <linearGradient id="shine" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".92"/><stop offset=".28" stop-color="#fff" stop-opacity="0"/><stop offset=".58" stop-color="#fff" stop-opacity=".62"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+ <linearGradient id="rainbow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff9ac8" stop-opacity=".55"/><stop offset=".25" stop-color="#ffeaa2" stop-opacity=".48"/><stop offset=".5" stop-color="#9ae8e2" stop-opacity=".56"/><stop offset=".75" stop-color="#c8a6fb" stop-opacity=".55"/><stop offset="1" stop-color="#e6a6f2" stop-opacity=".45"/></linearGradient>
+ <mask id="hole"><rect width="500" height="500" fill="white"/><circle cx="250" cy="250" r="31" fill="black"/></mask>
+</defs>
+<circle cx="250" cy="250" r="231" fill="#596a85" opacity=".18"/>
+<circle cx="250" cy="250" r="224" fill="url(#disc)" stroke="#fff" stroke-width="5" mask="url(#hole)"/>
+<circle cx="250" cy="250" r="213" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="2"/>
+<circle cx="250" cy="250" r="198" fill="none" stroke="#8395ad" stroke-opacity=".38" stroke-width="1.5"/>
+<circle cx="250" cy="250" r="181" fill="none" stroke="#fff" stroke-opacity=".58" stroke-width="1"/>
+<circle cx="250" cy="250" r="155" fill="none" stroke="#fff" stroke-opacity=".42" stroke-width="1"/>
+<circle cx="250" cy="250" r="124" fill="none" stroke="#7d8ba7" stroke-opacity=".3" stroke-width="1"/>
+<g mask="url(#hole)"><circle cx="250" cy="250" r="224" fill="url(#rainbow)" opacity=".72"/><path d="M250 26 A224 224 0 0 1 468 198 L414 211 A168 168 0 0 0 250 82Z" fill="#fff" opacity=".23"/><path d="M32 300 A224 224 0 0 1 152 54 L183 102 A168 168 0 0 0 83 308Z" fill="#c49bef" opacity=".2"/><path d="M107 435 A224 224 0 0 1 34 300 L89 284 A168 168 0 0 0 142 393Z" fill="#f2a8d0" opacity=".24"/><circle cx="250" cy="250" r="106" fill="url(#label)" stroke="#fff" stroke-width="3"/></g>
+<circle cx="250" cy="250" r="94" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>
+<text x="250" y="235" font-family="Georgia,serif" font-size="17" text-anchor="middle" fill="#f8fbff" letter-spacing="3">LITTLE</text>
+<text x="250" y="260" font-family="Georgia,serif" font-size="15" text-anchor="middle" fill="#f8fbff" letter-spacing="2">MIXTAPE</text>
+<text x="250" y="282" font-family="Arial,sans-serif" font-size="8" text-anchor="middle" fill="#f8fbff" letter-spacing="2">SIDE B • 2005</text>
+<circle cx="250" cy="250" r="37" fill="#dce7f0" stroke="#fff" stroke-width="5"/>
+<circle cx="250" cy="250" r="30.5" fill="#fff" stroke="#9aa9b8" stroke-width="2"/>
+<circle cx="250" cy="250" r="7" fill="#60728c" stroke="#fff" stroke-width="2"/>
+<path d="M76 147 Q165 46 302 54" fill="none" stroke="url(#shine)" stroke-width="24" stroke-linecap="round" opacity=".7"/>
+<path d="M80 346 Q185 445 344 415" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="8" stroke-linecap="round"/>
+</svg>
